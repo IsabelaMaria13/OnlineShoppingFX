@@ -6,7 +6,9 @@ module com.example.onlineshoppingfx {
     requires org.kordamp.bootstrapfx.core;
 
     opens com.example.onlineshoppingfx to javafx.fxml;
-    exports com.example.onlineshoppingfx.app;
     exports com.example.onlineshoppingfx.controller;
+    exports com.example.onlineshoppingfx.service;
+    exports com.example.onlineshoppingfx.model;
+    exports com.example.onlineshoppingfx.repository;
     opens com.example.onlineshoppingfx.controller to javafx.fxml;
 }

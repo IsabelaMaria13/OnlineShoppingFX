@@ -51,12 +51,14 @@ public class ProductsFile {
         }
     }
 
-    public static void displayProducts() {
-        List<Product> products = loadProducts();
-        if (products.isEmpty()) {
-            System.out.println("No products found");
-        } else {
-            products.forEach(System.out::println);
+    public static void saveAllProductsToFile(List<Product> products) throws IOException {
+        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(FILE_PATH, false)))) {
+            for (Product product : products) {
+                writer.println(product.getId() + "," + product.getName() + "," + product.getPrice() + "," + product.getStock());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save products to file: " + e.getMessage(), e);
         }
     }
+
 }
