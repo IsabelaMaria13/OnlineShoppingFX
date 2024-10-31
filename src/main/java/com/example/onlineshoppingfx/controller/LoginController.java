@@ -26,17 +26,16 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (loginService.loginUser(email, password)) {
-            showAlert(Alert.AlertType.INFORMATION, "Login Successful", "Welcome, " + email);
             goToMainView();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid email or password.");
+            showAlert();
         }
     }
 
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setContentText(message);
+    private void showAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Login Failed");
+        alert.setContentText("Invalid email or password.");
         alert.showAndWait();
     }
 
@@ -54,5 +53,14 @@ public class LoginController {
 
     @FXML
     private void goToRegister() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/onlineshoppingfx/register-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = (Stage) emailField.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Register View");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

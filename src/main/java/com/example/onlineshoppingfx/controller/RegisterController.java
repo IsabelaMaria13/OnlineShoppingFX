@@ -1,5 +1,6 @@
 package com.example.onlineshoppingfx.controller;
 
+import com.example.onlineshoppingfx.model.User;
 import com.example.onlineshoppingfx.service.RegisterUser;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,18 +32,24 @@ public class RegisterController {
         String lastName = lastNameField.getText();
 
         String password = passwordField.getText();
+        User newUser = new User(email, firstName, lastName, password);
+        RegisterUser registerMethod = new RegisterUser();
+        String validationMessage = registerMethod.isUserCredentialsValid(newUser);
 
+        if (validationMessage != null) {
+            showAlert(validationMessage);
+            return;
+        }
         if (registerService.registerNewUser(email, firstName, lastName, password)) {
-            showAlert(Alert.AlertType.INFORMATION, "Register Successful", "Welcome, " + email);
             goToMainView();
         } else {
-            showAlert(Alert.AlertType.ERROR, "Register Failed", "User with email " + email + " is already registered.");
+            showAlert("User with email " + email + " is already registered.");
         }
     }
 
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Register Failed");
         alert.setContentText(message);
         alert.showAndWait();
     }

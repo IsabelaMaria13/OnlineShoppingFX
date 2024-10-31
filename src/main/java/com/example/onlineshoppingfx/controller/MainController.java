@@ -1,18 +1,20 @@
 package com.example.onlineshoppingfx.controller;
 
 import com.example.onlineshoppingfx.model.Product;
-import com.example.onlineshoppingfx.repository.ProductRepository;
 import com.example.onlineshoppingfx.service.ProductService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public class MainController {
 
@@ -53,46 +55,25 @@ public class MainController {
 
     @FXML
     private void addProduct() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Add New Product");
-        dialog.setHeaderText("Enter Product Details");
-
-        dialog.setContentText("Enter Product ID:");
-        Optional<String> result = dialog.showAndWait();
-        if (!result.isPresent()) {
-            return;
-        }
-        int id = Integer.parseInt(result.get());
-
-        dialog.setContentText("Enter Product Name:");
-        result = dialog.showAndWait();
-        if (!result.isPresent()) {
-            return;
-        }
-        String name = result.get();
-
-        dialog.setContentText("Enter Product Price:");
-        result = dialog.showAndWait();
-        if (!result.isPresent()) {
-            return;
-        }
-        double price = Double.parseDouble(result.get());
-
-        dialog.setContentText("Enter Product Stock:");
-        result = dialog.showAndWait();
-        if (!result.isPresent()) {
-            return;
-        }
-        int stock = Integer.parseInt(result.get());
-
-        Product newProduct = new Product(id, name, price, stock);
-        List<Product> newProducts = List.of(newProduct);
         try {
-            productService.addProducts(newProducts);
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Product added successfully.");
-            loadProducts();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/onlineshoppingfx/add-product-view.fxml"));
+            Parent root = loader.load();
+            AddProductController addProductController = loader.getController();
+
+            Stage stage = new Stage();
+            stage.setTitle("Add New Product");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+
+            Product newProduct = addProductController.getProduct();
+            if (newProduct != null) {
+                productService.addProducts(List.of(newProduct));
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Product added successfully.");
+                loadProducts();
+            }
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to add product: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to open add product window: " + e.getMessage());
         }
     }
 

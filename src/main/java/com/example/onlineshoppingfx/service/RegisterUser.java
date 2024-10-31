@@ -6,7 +6,6 @@ import com.example.onlineshoppingfx.utils.users.UserFile;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Scanner;
 
 public class RegisterUser implements Serializable {
     public RegisterUser() {
@@ -18,12 +17,25 @@ public class RegisterUser implements Serializable {
 
         if (!isUserAlreadyRegistered(newUser)) {
             UserFile.saveUser(newUser);
-            System.out.println("User " + email + " registered successfully.");
             return true;
         } else {
-            System.out.println("User with email " + email + " is already registered.");
             return false;
         }
+    }
+    public String isUserCredentialsValid(User newUser) {
+        if (newUser.getEmail() == null || newUser.getEmail().isEmpty() || !newUser.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            return "Invalid email format.";
+        }
+        if (newUser.getFirstName() == null || newUser.getFirstName().isEmpty()) {
+            return "First name cannot be empty.";
+        }
+        if (newUser.getLastName() == null || newUser.getLastName().isEmpty()) {
+            return "Last name cannot be empty.";
+        }
+        if (newUser.getPassword() == null || newUser.getPassword().isEmpty()) {
+            return "Password cannot be empty.";
+        }
+        return null;
     }
 
     private boolean isUserAlreadyRegistered(User newUser) {
