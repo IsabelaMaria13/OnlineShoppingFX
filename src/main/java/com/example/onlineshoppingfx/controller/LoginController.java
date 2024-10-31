@@ -43,7 +43,7 @@ public class LoginController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/onlineshoppingfx/main-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = (Stage) emailField.getScene().getWindow(); // Obține scena curentă
+            Stage stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(scene);
             stage.setTitle("Main View");
         } catch (IOException e) {
