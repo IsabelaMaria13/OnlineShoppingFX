@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="15.0" prefWidth="500.0" prefHeight="400.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.onlineshoppingfx.controller.EditProductController">
+    <Label text="Edit Product" style="-fx-font-size: 18px;"/>
+    <TextField fx:id="idField" promptText="Product ID" editable="false"/>
+    <TextField fx:id="nameField" promptText="Product Name"/>
+    <TextField fx:id="priceField" promptText="Price"/>
+    <TextField fx:id="stockField" promptText="Stock"/>
+    <Button text="Save Changes" onAction="#handleSave"/>
+</VBox>

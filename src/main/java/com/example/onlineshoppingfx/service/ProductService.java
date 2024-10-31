@@ -23,5 +23,9 @@ public class ProductService {
         ProductsFile.saveAllProductsToFile(products);
     }
 
+    public void updateProduct(Product product) throws IOException {
+        ProductsFile.updateProduct(product);
+    }
+
 }
 

@@ -1,7 +1,6 @@
 package com.example.onlineshoppingfx.utils.products;
 
 
-
 import com.example.onlineshoppingfx.model.Product;
 
 import java.io.*;
@@ -34,7 +33,7 @@ public class ProductsFile {
     }
 
 
-    public static void saveProductsToFile(List<Product> newProducts) throws IOException {
+    public static void saveProductsToFile(List<Product> newProducts) {
         List<Product> existingProducts = loadProducts();
 
         try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(FILE_PATH, true)))) {
@@ -51,7 +50,20 @@ public class ProductsFile {
         }
     }
 
-    public static void saveAllProductsToFile(List<Product> products) throws IOException {
+    public static void updateProduct(Product updatedProduct) throws IOException {
+        List<Product> products = ProductsFile.loadProducts();
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getId() == updatedProduct.getId()) {
+                products.set(i, updatedProduct);
+                break;
+            }
+        }
+
+        ProductsFile.saveAllProductsToFile(products);
+    }
+
+
+    public static void saveAllProductsToFile(List<Product> products) {
         try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(FILE_PATH, false)))) {
             for (Product product : products) {
                 writer.println(product.getId() + "," + product.getName() + "," + product.getPrice() + "," + product.getStock());

@@ -4,7 +4,6 @@ import com.example.onlineshoppingfx.model.Product;
 import com.example.onlineshoppingfx.service.ProductService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -78,7 +77,7 @@ public class MainController {
         }
     }
 
-    public void deleteProduct(ActionEvent actionEvent) {
+    public void deleteProduct() {
         Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
 
         if (selectedProduct != null) {
@@ -101,7 +100,7 @@ public class MainController {
     }
 
 
-    public void showUsersList(ActionEvent actionEvent) {
+    public void showUsersList() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/onlineshoppingfx/users-view.fxml"));
             Parent root = loader.load();
@@ -114,6 +113,35 @@ public class MainController {
 
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to open users list window: " + e.getMessage());
+        }
+    }
+
+    public void editProduct() {
+        Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
+
+        if (selectedProduct != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/onlineshoppingfx/edit-product-view.fxml"));
+                Parent root = loader.load();
+
+                EditProductController editProductController = loader.getController();
+                editProductController.setProduct(selectedProduct);
+
+                Stage stage = new Stage();
+                stage.setTitle("Edit Product");
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setScene(new Scene(root));
+                stage.showAndWait();
+
+                productService.updateProduct(selectedProduct);
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Product updated successfully.");
+
+                productTable.refresh();
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to open edit product window: " + e.getMessage());
+            }
+        } else {
+            showAlert(Alert.AlertType.WARNING, "No Selection", "Please select a product to edit.");
         }
     }
 }
