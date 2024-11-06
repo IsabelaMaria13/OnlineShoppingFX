@@ -2,6 +2,7 @@ package com.example.onlineshoppingfx.utils.users;
 
 
 
+import com.example.onlineshoppingfx.exceptions.UserLoadingException;
 import com.example.onlineshoppingfx.model.User;
 
 import java.io.*;
@@ -14,37 +15,41 @@ public class UserFile implements Serializable {
 
     private static final String FILE_PATH = "C:\\Users\\isabe\\IdeaProjects\\OnlineShoppingFX\\files\\users.bine";
 
-    public static List<User> loadUsers() {
+    public static List<User> loadUsers() throws UserLoadingException {
         List<User> users = new ArrayList<>();
 
-        try (ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(
-                new FileInputStream(FILE_PATH)
-        ))) {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(FILE_PATH)))) {
             users = (List<User>) inputStream.readObject();
         } catch (FileNotFoundException e) {
-            try {
-                throw new FileNotFoundException(e.getMessage());
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
+            throw new UserLoadingException("User file not found: " + e.getMessage());
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new UserLoadingException("Error reading user data: " + e.getMessage());
         }
+
         return users;
     }
 
     public static void saveUser(User newUser) {
-        List<User> users = loadUsers();
+        List<User> users;
+
+        try {
+            users = loadUsers();
+        } catch (UserLoadingException e) {
+            System.out.println("Error loading users: " + e.getMessage());
+            return;
+        }
+
         boolean userExists = users.stream().anyMatch(oldUser -> oldUser.getEmail().equals(newUser.getEmail()));
         if (!userExists) {
             users.add(newUser);
         } else {
             System.out.println("User with email " + newUser.getEmail() + " is already registered.");
         }
+
         try {
             saveUsersToFile(users);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to save users to file: " + e.getMessage(), e);
         }
     }
 
@@ -63,7 +68,13 @@ public class UserFile implements Serializable {
     }
 
     public static void displayUsers() {
-        List<User> users = loadUsers();
+        List<User> users;
+        try {
+            users = loadUsers();
+        } catch (UserLoadingException e) {
+            System.out.println("Error loading users: " + e.getMessage());
+            return;
+        }
         if (users.isEmpty()) {
             System.out.println("No users found");
         } else {

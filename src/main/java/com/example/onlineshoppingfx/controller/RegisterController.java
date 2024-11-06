@@ -1,11 +1,13 @@
 package com.example.onlineshoppingfx.controller;
 
+import com.example.onlineshoppingfx.exceptions.InvalidDataException;
 import com.example.onlineshoppingfx.model.User;
 import com.example.onlineshoppingfx.service.RegisterUser;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -13,16 +15,17 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class RegisterController {
+
     @FXML
     private TextField emailField;
     @FXML
     private TextField firstNameField;
     @FXML
     private TextField lastNameField;
-
     @FXML
     private PasswordField passwordField;
-
+    @FXML
+    public ComboBox<String> roleComboBox;
     private final RegisterUser registerService = new RegisterUser();
 
     @FXML
@@ -30,20 +33,29 @@ public class RegisterController {
         String email = emailField.getText();
         String firstName = firstNameField.getText();
         String lastName = lastNameField.getText();
-
         String password = passwordField.getText();
-        User newUser = new User(email, firstName, lastName, password);
-        RegisterUser registerMethod = new RegisterUser();
-        String validationMessage = registerMethod.isUserCredentialsValid(newUser);
+        String roleValue = roleComboBox.getValue();
 
-        if (validationMessage != null) {
-            showAlert(validationMessage);
+        if (email == null || email.isEmpty() || firstName == null || firstName.isEmpty() || lastName == null || lastName.isEmpty() || password == null || password.isEmpty() || roleValue == null || roleValue.isEmpty()) {
+            showAlert("Fields cannot be empty.");
             return;
         }
-        if (registerService.registerNewUser(email, firstName, lastName, password)) {
-            goToMainView();
-        } else {
-            showAlert("User with email " + email + " is already registered.");
+        User.Role role = User.Role.valueOf(roleValue);
+        User newUser = new User(email, firstName, lastName, password, role);
+
+        try {
+            String validationMessage = registerService.isUserCredentialsValid(newUser);
+            if (validationMessage != null) {
+                showAlert(validationMessage);
+                return;
+            }
+            if (registerService.registerNewUser(email, firstName, lastName, password, role)) {
+                goToMainView();
+            } else {
+                showAlert("Register Failed: User with this email already exists.");
+            }
+        } catch (InvalidDataException e) {
+            showAlert(e.getMessage());
         }
     }
 

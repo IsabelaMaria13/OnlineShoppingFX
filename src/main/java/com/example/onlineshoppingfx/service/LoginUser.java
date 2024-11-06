@@ -1,6 +1,7 @@
 package com.example.onlineshoppingfx.service;
 
 
+import com.example.onlineshoppingfx.exceptions.UserLoadingException;
 import com.example.onlineshoppingfx.model.User;
 import com.example.onlineshoppingfx.utils.users.UserFile;
 
@@ -11,13 +12,20 @@ public class LoginUser implements Serializable {
     public LoginUser() {
     }
 
-    public boolean loginUser(String loginEmail, String loginPassword) {
-        List<User> users = UserFile.loadUsers();
+    public User loginUser(String loginEmail, String loginPassword) {
+        List<User> users;
+        try {
+            users = UserFile.loadUsers();
+        } catch (UserLoadingException e) {
+            System.out.println("Error loading users: " + e.getMessage());
+            return null;
+        }
+
         for (User user : users) {
             if (user.getEmail().equals(loginEmail) && user.getPassword().equals(loginPassword)) {
-                return true;
+                return user;
             }
         }
-        return false;
+        return null;
     }
 }

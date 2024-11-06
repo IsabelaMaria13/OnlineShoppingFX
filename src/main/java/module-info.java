@@ -9,6 +9,5 @@ module com.example.onlineshoppingfx {
     exports com.example.onlineshoppingfx.controller;
     exports com.example.onlineshoppingfx.service;
     exports com.example.onlineshoppingfx.model;
-    exports com.example.onlineshoppingfx.repository;
     opens com.example.onlineshoppingfx.controller to javafx.fxml;
 }

@@ -10,13 +10,20 @@ public class User implements Serializable {
     private String firstName;
     private String lastName;
     private String password;
-    private static int counter = 1;
 
-    public User(String email, String firstName, String lastName, String password) {
+    private Role role;
+
+    public enum Role{
+        CLIENT,
+        ADMIN
+    }
+
+    public User(String email, String firstName, String lastName, String password, Role role) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
+        this.role = role;
     }
 
     public User() {
@@ -39,8 +46,9 @@ public class User implements Serializable {
         return password;
     }
 
-    @Override
-    public String toString() {
-        return counter++ + " " + email;
+    public Role getRole() {
+        return role;
     }
+
+
 }

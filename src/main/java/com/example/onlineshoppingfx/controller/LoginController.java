@@ -1,5 +1,6 @@
 package com.example.onlineshoppingfx.controller;
 
+import com.example.onlineshoppingfx.model.User;
 import com.example.onlineshoppingfx.service.LoginUser;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,8 +26,9 @@ public class LoginController {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        if (loginService.loginUser(email, password)) {
-            goToMainView();
+        User authenticatedUser = loginService.loginUser(email, password);
+        if (authenticatedUser != null) {
+            goToMainView(authenticatedUser);
         } else {
             showAlert();
         }
@@ -39,13 +41,24 @@ public class LoginController {
         alert.showAndWait();
     }
 
-    private void goToMainView() {
+    private void goToMainView(User user) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/onlineshoppingfx/main-view.fxml"));
+            FXMLLoader fxmlLoader;
+            if (user.getRole() == User.Role.ADMIN) {
+                fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/onlineshoppingfx/main-view.fxml"));
+            } else {
+                fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/onlineshoppingfx/shopping-main-view.fxml"));
+            }
+
             Scene scene = new Scene(fxmlLoader.load());
             Stage stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(scene);
-            stage.setTitle("Main View");
+
+            if (user.getRole() == User.Role.ADMIN) {
+                stage.setTitle("Admin Main View");
+            } else {
+                stage.setTitle("Client Shopping View");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

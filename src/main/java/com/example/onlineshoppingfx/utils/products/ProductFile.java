@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductsFile {
+public class ProductFile {
     private static final String FILE_PATH = "C:\\Users\\isabe\\IdeaProjects\\OnlineShoppingFX\\files\\products.txt";
 
     public static List<Product> loadProducts() {
@@ -51,7 +51,7 @@ public class ProductsFile {
     }
 
     public static void updateProduct(Product updatedProduct) throws IOException {
-        List<Product> products = ProductsFile.loadProducts();
+        List<Product> products = ProductFile.loadProducts();
         for (int i = 0; i < products.size(); i++) {
             if (products.get(i).getId() == updatedProduct.getId()) {
                 products.set(i, updatedProduct);
@@ -59,7 +59,7 @@ public class ProductsFile {
             }
         }
 
-        ProductsFile.saveAllProductsToFile(products);
+        ProductFile.saveAllProductsToFile(products);
     }
 
 
